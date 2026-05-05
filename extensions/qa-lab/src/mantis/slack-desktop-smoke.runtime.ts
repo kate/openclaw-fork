@@ -2,6 +2,7 @@ import { spawn, type SpawnOptions } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { pathExists } from "openclaw/plugin-sdk/security-runtime";
 import { ensureRepoBoundDirectory, resolveRepoRelativeOutputDir } from "../cli-paths.js";
 import {
   acquireQaCredentialLease,
@@ -182,15 +183,6 @@ async function defaultCommandRunner(
   });
 }
 
-async function pathExists(filePath: string) {
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 async function readRemoteMetadata(
   outputDir: string,
 ): Promise<SlackDesktopRemoteMetadata | undefined> {
@@ -215,7 +207,6 @@ async function readRemoteMetadata(
     return undefined;
   }
 }
-
 async function resolveCrabboxBin(params: {
   env: NodeJS.ProcessEnv;
   explicit?: string;
